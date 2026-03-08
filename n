@@ -1,0 +1,135 @@
+---------REMOTE DEHASHING---------
+
+local randId = tostring(workspace:GetAttribute("RandId") or "")
+local b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+
+local function decode(encoded)
+    encoded = encoded:gsub("=", "")
+    local bits = ""
+    for i = 1, #encoded do
+        local c = encoded:sub(i, i)
+        local val = b64chars:find(c, 1, true) - 1
+        for j = 5, 0, -1 do
+            bits = bits .. (val % 2^(j+1) - val % 2^j > 0 and "1" or "0")
+        end
+    end
+    local result = ""
+    for i = 1, #bits - 7, 8 do
+        local byte = 0
+        for j = 0, 7 do
+            byte = byte + (bits:sub(i+j, i+j) == "1" and 2^(7-j) or 0)
+        end
+        if byte ~= 0 then
+            result = result .. string.char(byte)
+        end
+    end
+    if result:sub(1, #randId) == randId then
+        result = result:sub(#randId + 1)
+    end
+    return result
+end
+
+local netDir = game:GetService("ReplicatedStorage"):WaitForChild("SIMPLE_NET")
+for _, v in ipairs(netDir:GetDescendants()) do
+    local ok, decoded = pcall(decode, v.Name)
+    if ok and decoded and #decoded > 0 then
+        print("Dehashed", v.Name, "--->", decoded)
+        v.Name = decoded
+    end
+end
+
+wait(0.7)
+
+----------------------------ANTI CHEAT BYPASS----------------------------
+
+local StarterGui = game:GetService("StarterGui")
+local net = game:GetService("ReplicatedStorage"):WaitForChild("SIMPLE_NET")
+
+if _G.thefuckyoulookingat33C2033fraundaintshit then
+    StarterGui:SetCore("SendNotification", {
+        Title = "Anti Cheat Bypass",
+        Text = "The anti cheat bypass is already running.",
+        Duration = 5,
+    })
+    return
+end
+
+---------SERVICE DETECTION BYPASS---------
+local old1
+old1 = hookfunction(net:FindFirstChild("ServiceDetectionEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old1(self, ...)
+end)
+
+---------FLAG CHANGED BYPASS---------
+local old2
+old2 = hookfunction(net:FindFirstChild("FlagChangedEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old2(self, ...)
+end)
+
+---------ERROR REPORT BYPASS---------
+local old3
+old3 = hookfunction(net:FindFirstChild("ReportErrorEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old3(self, ...)
+end)
+
+---------TELEPORT LOG BYPASS---------
+local old4
+old4 = hookfunction(net:FindFirstChild("ClientTeleportLogEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old4(self, ...)
+end)
+
+---------HEAD ANCHORED BYPASS---------
+local old5
+old5 = hookfunction(net:FindFirstChild("HeadAnchoredEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old5(self, ...)
+end)
+
+---------VELOCITY FLY BYPASS---------
+local old6
+old6 = hookfunction(net:FindFirstChild("VelocityFlyEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old6(self, ...)
+end)
+
+---------CANCOLLIDE VIOLATION BYPASS---------
+local old7
+old7 = hookfunction(net:FindFirstChild("CanCollideViolationEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old7(self, ...)
+end)
+
+---------STAT COMPARISON BYPASS---------
+local old8
+old8 = hookfunction(net:FindFirstChild("StatComparisonFailedEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old8(self, ...)
+end)
+
+---------BODY MOVER LOG BYPASS---------
+local old9
+old9 = hookfunction(net:FindFirstChild("LogBodyMoverEvent", true).FireServer, function(self, ...)
+    if not checkcaller() then return nil end
+    return old9(self, ...)
+end)
+
+---------CHECKER---------
+if not old1 or not old2 or not old3 or not old4 or not old5 or not old6 or not old7 or not old8 or not old9 then
+    StarterGui:SetCore("SendNotification", {
+        Title = "Anti Cheat Bypass Failed",
+        Text = "The anti cheat has not been bypassed (WARNING)",
+        Duration = 5,
+    })
+    warn("Anti cheat bypass failed. (WAIT FOR AN UPDATE)")
+else
+    StarterGui:SetCore("SendNotification", {
+        Title = "Successfully Bypassed Anti Cheat",
+        Text = "The anti cheat has been bypassed, now you can do anything you want!",
+        Duration = 5,
+    })
+    _G.thefuckyoulookingat33C2033fraundaintshit = true
+end
